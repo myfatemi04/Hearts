@@ -9,7 +9,7 @@ public class PacketConstants {
 		public static final byte pc_myid = 0x01;
 		public static final byte pc_playerid = 0x02;
 		public static final byte pc_playername = 0x03;
-		
+		 
 		public static final byte pc_currentcards = 0x10;
 		public static final byte pc_playablecards = 0x11;
 

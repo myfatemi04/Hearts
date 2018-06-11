@@ -1,6 +1,6 @@
 package hearts.server;
 
-import static hearts.PacketConstants.*;
+import static hearts.Constants.*;
 
 import hearts.DebugUtil;
 import hearts.Packet;
@@ -38,8 +38,11 @@ public class SClientHandler extends Thread {
 					switch (data) {
 					case pc_myname:
 						parentClient.name = new String(payload);
-						parentServer.broadcast(pc_datapayload, new byte[] {pc_playerid}, Packet.longToBytes(parentClient.id));
-						parentServer.broadcast(pc_datapayload, new byte[] {pc_playername}, Packet.longToBytes(parentClient.id), parentClient.name.getBytes());
+						parentServer.broadcast(pc_datapayload, new byte[] {pc_playernameid}, Packet.longToBytes(parentClient.id), parentClient.name.getBytes());
+						break;
+					case pc_myplaycard:
+						byte card = (byte) Packet.bytesToLong(payload);
+						parentClient.playcard = card;
 						break;
 					default:
 						break;

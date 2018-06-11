@@ -1,5 +1,5 @@
 @echo off
 @javac hearts/*.java
 @javac hearts/server/*.java
-java hearts/server/Server
-pause
+@javac hearts/server/swing/*.java
+start "" javaw hearts/server/Server

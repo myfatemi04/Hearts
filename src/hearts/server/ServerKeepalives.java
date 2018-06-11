@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import hearts.Packet;
-import hearts.PacketConstants;
+import hearts.Constants;
 
 public class ServerKeepalives extends Thread {
 	Server parent = null;
@@ -15,7 +15,7 @@ public class ServerKeepalives extends Thread {
 		while (parent.status != parent.STATUS_CLOSEGAME) {
 			for (SClient c : parent.clients) { 
 				try {
-					Packet.sendPacket(c.out, PacketConstants.pc_keepalive, new byte[] {});
+					Packet.sendPacket(c.out, Constants.pc_keepalive, new byte[] {});
 				} catch (SocketException e) {
 					parent.clients.remove(c);
 					c.alive = false;

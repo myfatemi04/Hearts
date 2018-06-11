@@ -1,5 +1,6 @@
 package hearts;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,7 +16,7 @@ public class Deck {
 	public byte[] cards;
 	public int ncards = 52;
 	public static final String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
-	public static final char[] numbers = {'A','2','3','4','5','6','7','8','9','0','J','Q','K'};
+	public static final char[] numbers = {'2','3','4','5','6','7','8','9','0','J','Q','K','A'};
 	// suit order: hearts, diamonds, clubs, spades.
 	public Deck() { // creates new "Deck" with 52 cards
 		cards = new byte[52];
@@ -79,13 +80,24 @@ public class Deck {
 			d[i] = new Deck();
 			d[i].ncards = 0;
 		}
-		for (int i = 0; i < cards.length; i++) {
+		for (int i = 0; i < ncards; i++) {
 			Deck c = d[i % people];
 			c.cards[c.ncards++] = cards[i];
 		}
 		return d;
 	}
-	
+	public Deck[] dealEvenly(int people) {
+		Deck[] d = new Deck[people];
+		for (int i = 0; i < people; i++) {
+			d[i] = new Deck();
+			d[i].ncards = 0;
+		}
+		for (int i = 0; i < (ncards/people * people); i++) {
+			Deck c = d[i % people];
+			c.cards[c.ncards++] = cards[i];
+		}
+		return d;
+	}
 	public static String cardToString(byte card) {
 		try {
 			int suit = card/13;
@@ -93,9 +105,40 @@ public class Deck {
 			
 			return numbers[number] + " of " + suits[suit];
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return "Unknown";
+			return "Empty";
 		}
 		
+	}
+	
+	public Deck getPlayable(int suit) {
+		Deck d = new Deck(new byte[ncards]);
+		d.ncards = 0;
+		for (int i = 0; i < ncards; i++) {
+			if (cards[i] / 13 == suit) {
+				d.cards[d.ncards] = cards[i];
+				d.ncards += 1;
+			}
+		}
+		byte[] newArray = new byte[d.ncards];
+		for (int i = 0; i < d.ncards; i++) {
+			newArray[i] = d.cards[i];
+		}
+		d.cards = newArray;
+		
+		if (d.ncards == 0) return this.clone();
+		return d;
+	}
+	
+	public void remove(int card) {
+		for (int i = 0; i < ncards; i++) {
+			if (cards[i] == card) {
+				byte[] total = new byte[ncards - 1];
+				System.arraycopy(cards, 0, total, 0, i);
+				System.arraycopy(cards, i + 1, total, i, ncards - i - 1);
+				this.cards = total;
+				this.ncards -= 1;
+			}
+		}
 	}
 	
 	// Implementing Fisher–Yates shuffle
@@ -110,5 +153,31 @@ public class Deck {
 			ar[index] = ar[i];
 			ar[i] = a;
 		}
+	}
+	
+	@Override
+	public Deck clone() {
+		Deck d = new Deck();
+		byte[] tmp = new byte[this.ncards];
+		d.ncards = this.ncards;
+		for (int i = 0; i < Math.min(d.ncards, this.cards.length); i++) {
+			tmp[i] = this.cards[i];
+		}
+		d.cards = tmp;
+		return d;
+	}
+	
+	public String toNumberedString() {
+		String str = new String();
+		for (int i = 0; i < Math.min(ncards, cards.length); i++) {
+			str += "[" + (i) + "] " + cardToString(cards[i]) + "\n";
+		}
+		return str;
+	}
+	
+	public Deck sorted() {
+		Deck tmp = this.clone();
+		Arrays.sort(tmp.cards);
+		return tmp;
 	}
 }

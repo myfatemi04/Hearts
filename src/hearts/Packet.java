@@ -1,6 +1,6 @@
 package hearts;
 
-import static hearts.PacketConstants.*;
+import static hearts.Constants.*;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
